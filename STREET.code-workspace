@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "STREET",
+			"path": "."
+		},
+		{
+			"name": "build",
+			"path": "../Documentos/street/build"
+		}
+	],
+	"settings": {}
+}
