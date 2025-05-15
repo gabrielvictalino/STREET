@@ -30,15 +30,15 @@ Para executar o STREET, siga estas etapas:
 
 <ul>
   <li>
-    <a href="https://github.com/raf7525">Gabriel Victalino</a> -
+    <a href="https://github.com/gabrielvictalino">Gabriel Victalino</a> -
     gvm@cesar.school 📩
   </li>
   <li>
-    <a href="https://github.com/MigueldsBatista">Leonardo Gutzeit</a> -
+    <a href="https://github.com/LeoGutzeitt/">Leonardo Gutzeit</a> -
     @cesar.school 📩
   </li>
   <li>
-    <a href="https://github.com/ticogafa">Felipe Cavalcanti</a> -
+    <a href="https://github.com/Cavalcanti-Felipe">Felipe Cavalcanti</a> -
     @cesar.school 📩
   </li>
 </ul>
