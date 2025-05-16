@@ -29,14 +29,14 @@ void IniciarJogador(Jogador *j) {
 
 void AtualizarJogador(Jogador *j) {
     // Física do pulo
-    if (IsKeyDown(KEY_SPACE) && j->posicao.y >= 500)
+    if (IsKeyDown(KEY_SPACE) && j->posicao.y >= 300)
         j->velocidade = -12;
 
     j->velocidade += 0.5f;
     j->posicao.y += j->velocidade;
 
-    if (j->posicao.y > 500) {
-        j->posicao.y = 500;
+    if (j->posicao.y > 300) {
+        j->posicao.y = 300;
         j->velocidade = 0;
     }
 

@@ -2,10 +2,14 @@
 #include "score.h"
 #include "player.h"
 #include "obstacle.h"
+#include "mapa.h"
 
 int main() {
     InitWindow(800, 600, "STREET - Jogo Runner");
     SetTargetFPS(60);
+
+    Mapa mapa;
+    IniciarMapa(&mapa);
 
     Jogador jogador;
     IniciarJogador(&jogador);
@@ -14,6 +18,7 @@ int main() {
     int pontos = 0;
 
     while (!WindowShouldClose()) {
+        AtualizarMapa(&mapa);
         AtualizarJogador(&jogador);
         AtualizarObstaculos(obstaculos);
 
@@ -26,20 +31,16 @@ int main() {
 
         BeginDrawing();
         ClearBackground(DARKBLUE);
-
+        DesenharMapa(mapa);
         DesenharJogador(jogador);
-
-        // Teste de sprite fixo para debug:
-        // DrawTexture(jogador.sprite, 50, 50, WHITE);
-
         DesenharObstaculos(obstaculos);
         DrawText(TextFormat("Pontos: %d", pontos), 20, 20, 20, RAYWHITE);
-
         EndDrawing();
     }
 
     LiberarObstaculos(obstaculos);
     UnloadTexture(jogador.sprite);
+    LiberarMapa(&mapa);
     CloseWindow();
 
     return 0;
