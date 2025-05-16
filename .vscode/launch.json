@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/leonardo-gutzeit/STREET",
-      "program": "/home/leonardo-gutzeit/STREET/build/Debug/outDebug",
+      "cwd": "/home/leonardo-gutzeit/Documentos/street/STREET",
+      "program": "/home/leonardo-gutzeit/Documentos/street/STREET/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

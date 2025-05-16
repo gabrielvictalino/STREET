@@ -7,6 +7,14 @@ typedef struct {
     Vector2 posicao;
     float velocidade;
     Rectangle caixa;
+
+    // Animação
+    Texture2D sprite;
+    Rectangle frameRec;
+    int frameAtual;
+    int frameContador;
+    int frameVelocidade;
+    int totalFrames;
 } Jogador;
 
 void IniciarJogador(Jogador *j);

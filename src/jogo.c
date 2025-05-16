@@ -28,6 +28,10 @@ int main() {
         ClearBackground(DARKBLUE);
 
         DesenharJogador(jogador);
+
+        // Teste de sprite fixo para debug:
+        // DrawTexture(jogador.sprite, 50, 50, WHITE);
+
         DesenharObstaculos(obstaculos);
         DrawText(TextFormat("Pontos: %d", pontos), 20, 20, 20, RAYWHITE);
 
@@ -35,6 +39,7 @@ int main() {
     }
 
     LiberarObstaculos(obstaculos);
+    UnloadTexture(jogador.sprite);
     CloseWindow();
 
     return 0;
