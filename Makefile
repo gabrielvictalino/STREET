@@ -2,8 +2,8 @@
 CC = gcc
 CFLAGS = -Wall -std=c99 -O2 -Iinclude
 
-# Arquivos
-OBJETOS = src/jogo.o src/player.o src/obstacle.o src/score.o src/mapa.o
+# Arquivos objeto
+OBJETOS = src/jogo.o src/player.o src/obstacle.o src/score.o src/mapa.o src/enemy.o
 EXECUTAVEL = street
 
 # Regra principal
@@ -11,7 +11,7 @@ $(EXECUTAVEL): $(OBJETOS)
 	$(CC) -o $(EXECUTAVEL) $(OBJETOS) -lraylib -lm -ldl -lpthread -lGL -lX11
 
 # Regras para cada .o
-src/jogo.o: src/jogo.c include/player.h include/obstacle.h include/score.h include/mapa.h
+src/jogo.o: src/jogo.c include/player.h include/obstacle.h include/score.h include/mapa.h include/enemy.h
 	$(CC) $(CFLAGS) -c -o src/jogo.o src/jogo.c
 
 src/player.o: src/player.c include/player.h
@@ -25,6 +25,9 @@ src/score.o: src/score.c include/score.h
 
 src/mapa.o: src/mapa.c include/mapa.h
 	$(CC) $(CFLAGS) -c -o src/mapa.o src/mapa.c
+
+src/enemy.o: src/enemy.c include/enemy.h
+	$(CC) $(CFLAGS) -c -o src/enemy.o src/enemy.c
 
 # Limpar arquivos compilados
 clean:

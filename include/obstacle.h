@@ -6,6 +6,7 @@
 
 typedef struct Obstaculo {
     Rectangle caixa;
+    float velocidade;
     struct Obstaculo *proximo;
 } Obstaculo;
 
@@ -15,7 +16,8 @@ typedef struct {
 } ListaObstaculos;
 
 ListaObstaculos* CriarObstaculos();
-void AtualizarObstaculos(ListaObstaculos *lista);
+void AdicionarObstaculo(ListaObstaculos *lista, int pontos);
+void AtualizarObstaculos(ListaObstaculos *lista, int pontos);
 void DesenharObstaculos(ListaObstaculos *lista);
 bool VerificarColisao(Jogador *j, ListaObstaculos *lista);
 void LiberarObstaculos(ListaObstaculos *lista);

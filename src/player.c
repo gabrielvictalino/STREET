@@ -4,15 +4,11 @@
 #include <stdio.h>
 
 void IniciarJogador(Jogador *j) {
-    j->posicao = (Vector2){100, 500};
+    j->posicao = (Vector2){100, 568};
     j->velocidade = 0;
 
     // Carrega o sprite do personagem
     j->sprite = LoadTexture("spritesBoneco/New Piskel.png");
-
-    if (j->sprite.id == 0) {
-        printf("Erro: Não foi possível carregar a textura do jogador!\n");
-    }
 
     // Define a caixa de colisão com o tamanho do frame
     j->caixa = (Rectangle){j->posicao.x, j->posicao.y, 32, 32};
@@ -35,8 +31,8 @@ void AtualizarJogador(Jogador *j) {
     j->velocidade += 0.5f;
     j->posicao.y += j->velocidade;
 
-    if (j->posicao.y > 300) {
-        j->posicao.y = 300;
+    if (j->posicao.y > 568) {
+        j->posicao.y = 568;
         j->velocidade = 0;
     }
 
