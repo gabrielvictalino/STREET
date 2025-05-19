@@ -10,7 +10,8 @@
 typedef enum {
     MENU_INICIAL,
     JOGANDO,
-    GAME_OVER
+    GAME_OVER,
+    PONTUACOES
 } EstadoJogo;
 
 int main() {
@@ -31,23 +32,43 @@ int main() {
 
     int pontos = 0;
 
+    int opcaoSelecionada = 0; // 0: Iniciar, 1: Pontuação, 2: Sair
+    const char *opcoesMenu[] = { "Iniciar Jogo", "Pontuacoes", "Sair" };
+    const int totalOpcoes = 3;
+
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(DARKBLUE);
 
         switch (estado) {
             case MENU_INICIAL:
-                DrawText("STREET - O JOGO", 220, 180, 40, RAYWHITE);
-                DrawText("Pressione ENTER para começar", 200, 260, 20, LIGHTGRAY);
-                if (IsKeyPressed(KEY_ENTER)) {
-                    IniciarMapa(&mapa);
-                    IniciarJogador(&jogador);
-                    if (obstaculos) LiberarObstaculos(obstaculos);
-                    obstaculos = CriarObstaculos();
-                    LiberarInimigos(inimigos);
-                    inimigos = NULL;
-                    pontos = 0;
-                    estado = JOGANDO;
+                DrawText("STREET - O JOGO", 240, 100, 40, RAYWHITE);
+
+                for (int i = 0; i < totalOpcoes; i++) {
+                    Color cor = (i == opcaoSelecionada) ? YELLOW : LIGHTGRAY;
+                    DrawText(opcoesMenu[i], 320, 200 + i * 40, 30, cor);
+                }
+
+                if (IsKeyPressed(KEY_DOWN)) {
+                    opcaoSelecionada = (opcaoSelecionada + 1) % totalOpcoes;
+                } else if (IsKeyPressed(KEY_UP)) {
+                    opcaoSelecionada = (opcaoSelecionada - 1 + totalOpcoes) % totalOpcoes;
+                } else if (IsKeyPressed(KEY_ENTER)) {
+                    if (opcaoSelecionada == 0) {
+                        IniciarMapa(&mapa);
+                        IniciarJogador(&jogador);
+                        if (obstaculos) LiberarObstaculos(obstaculos);
+                        obstaculos = CriarObstaculos();
+                        LiberarInimigos(inimigos);
+                        inimigos = NULL;
+                        pontos = 0;
+                        estado = JOGANDO;
+                    } else if (opcaoSelecionada == 1) {
+                        estado = PONTUACOES;
+                    } else if (opcaoSelecionada == 2) {
+                        CloseWindow();
+                        return 0;
+                    }
                 }
                 break;
 
@@ -78,6 +99,26 @@ int main() {
 
                 if (IsKeyPressed(KEY_R)) {
                     estado = MENU_INICIAL;
+                } else if (IsKeyPressed(KEY_ESCAPE)) {
+                    CloseWindow();
+                    return 0;
+                }
+                break;
+
+            case PONTUACOES:
+                DrawText("RANKING DE PONTOS", 230, 120, 30, RAYWHITE);
+
+                char **pontuacoes = LerPontuacoes();
+                for (int i = 0; i < 5 && pontuacoes && pontuacoes[i]; i++) {
+                    DrawText(pontuacoes[i], 280, 180 + i * 30, 20, LIGHTGRAY);
+                    free(pontuacoes[i]);
+                }
+                free(pontuacoes);
+
+                DrawText("Pressione ESC para voltar ao menu", 180, 400, 20, GRAY);
+
+                if (IsKeyPressed(KEY_ESCAPE)) {
+                    estado = MENU_INICIAL;
                 }
                 break;
         }
@@ -94,4 +135,3 @@ int main() {
 
     return 0;
 }
-

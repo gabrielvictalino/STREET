@@ -2,5 +2,6 @@
 #define PONTUACAO_H
 
 void SalvarPontuacao(int pontos);
+char **LerPontuacoes();
 
 #endif

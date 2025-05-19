@@ -35,10 +35,10 @@ Para executar o STREET, siga estas etapas:
   </li>
   <li>
     <a href="https://github.com/LeoGutzeitt/">Leonardo Gutzeit</a> -
-    @cesar.school 📩
+    lgbm@cesar.school 📩
   </li>
   <li>
     <a href="https://github.com/Cavalcanti-Felipe">Felipe Cavalcanti</a> -
-    @cesar.school 📩
+    fmcc@cesar.school 📩
   </li>
 </ul>
