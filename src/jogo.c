@@ -14,6 +14,10 @@ typedef enum {
     PONTUACOES
 } EstadoJogo;
 
+typedef struct {
+    Rectangle frame;
+} MenuFrame;
+
 int main() {
     InitWindow(800, 600, "STREET - O jogo");
     SetTargetFPS(60);
@@ -33,21 +37,27 @@ int main() {
     int pontos = 0;
 
     int opcaoSelecionada = 0; // 0: Iniciar, 1: Pontuação, 2: Sair
-    const char *opcoesMenu[] = { "Iniciar Jogo", "Pontuacoes", "Sair" };
     const int totalOpcoes = 3;
+
+    // ---- MENU GRAFICO ----
+    Texture2D menuTexture = LoadTexture("spritesMenu/menu.png");
+
+    MenuFrame menuFrames[3];
+    menuFrames[0].frame = (Rectangle){ 0, 0, 800, 800 };         // START
+    menuFrames[1].frame = (Rectangle){ 800, 0, 800, 800 };       // RECORD
+    menuFrames[2].frame = (Rectangle){ 0, 800, 800, 800 };       // EXIT
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(DARKBLUE);
 
         switch (estado) {
-            case MENU_INICIAL:
-                DrawText("STREET - O JOGO", 240, 100, 40, RAYWHITE);
-
-                for (int i = 0; i < totalOpcoes; i++) {
-                    Color cor = (i == opcaoSelecionada) ? YELLOW : LIGHTGRAY;
-                    DrawText(opcoesMenu[i], 320, 200 + i * 40, 30, cor);
-                }
+            case MENU_INICIAL: {
+                // Escalar imagem de 800x800 para 800x600
+                Rectangle dest = { 0, 0, 800, 600 };
+                Rectangle src = menuFrames[opcaoSelecionada].frame;
+                Vector2 origin = { 0, 0 };
+                DrawTexturePro(menuTexture, src, dest, origin, 0, WHITE);
 
                 if (IsKeyPressed(KEY_DOWN)) {
                     opcaoSelecionada = (opcaoSelecionada + 1) % totalOpcoes;
@@ -66,11 +76,13 @@ int main() {
                     } else if (opcaoSelecionada == 1) {
                         estado = PONTUACOES;
                     } else if (opcaoSelecionada == 2) {
+                        UnloadTexture(menuTexture);
                         CloseWindow();
                         return 0;
                     }
                 }
                 break;
+            }
 
             case JOGANDO:
                 AtualizarMapa(&mapa);
@@ -100,6 +112,7 @@ int main() {
                 if (IsKeyPressed(KEY_R)) {
                     estado = MENU_INICIAL;
                 } else if (IsKeyPressed(KEY_ESCAPE)) {
+                    UnloadTexture(menuTexture);
                     CloseWindow();
                     return 0;
                 }
@@ -131,6 +144,7 @@ int main() {
     UnloadTexture(jogador.sprite);
     LiberarMapa(&mapa);
     LiberarInimigos(inimigos);
+    UnloadTexture(menuTexture);
     CloseWindow();
 
     return 0;
