@@ -3,7 +3,7 @@
 
 Inimigo *CriarInimigo() {
     Inimigo *novo = malloc(sizeof(Inimigo));
-    novo->caixa = (Rectangle){800, 480, 40, 60};  // pode pular depois
+    novo->caixa = (Rectangle){800, 430, 40, 60};  // pode pular depois
     novo->velocidade = 6.0f;
     novo->proximo = NULL;
     return novo;

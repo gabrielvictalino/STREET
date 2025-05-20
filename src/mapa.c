@@ -8,9 +8,10 @@ void IniciarMapa(Mapa *m) {
         printf("Erro: Não foi possível carregar a textura do mapa!\n");
     }
 
+    // Cada frame do sprite tem 800x800, mas exibiremos apenas 800x600
     m->frameLargura = 800;
-    m->frameAltura = 600;
-    m->totalFrames = 4;
+    m->frameAltura = 800;
+    m->totalFrames = 5;
     m->frameAtual = 0;
 
     m->frameRec = (Rectangle){ 0, 0, (float)m->frameLargura, (float)m->frameAltura };
@@ -21,7 +22,7 @@ void AtualizarMapa(Mapa *m) {
     static int contador = 0;
     contador++;
 
-    if (contador >= 30) {  // troca de quadro a cada 2 segundos (60 FPS)
+    if (contador >= 30) {  // troca de quadro a cada 0.5 segundos em 60 FPS
         contador = 0;
         m->frameAtual = (m->frameAtual + 1) % m->totalFrames;
 
@@ -34,7 +35,13 @@ void AtualizarMapa(Mapa *m) {
 }
 
 void DesenharMapa(Mapa m) {
-    DrawTextureRec(m.textura, m.frameRec, m.posicao, WHITE);
+    // Só desenhar os primeiros 600 pixels de altura do frame
+    Rectangle frameVisivel = m.frameRec;
+    frameVisivel.height = 800;
+
+    Rectangle destino = { m.posicao.x, m.posicao.y, 800, 800 };
+
+    DrawTexturePro(m.textura, frameVisivel, destino, (Vector2){0, 0}, 0.0f, WHITE);
 }
 
 void LiberarMapa(Mapa *m) {

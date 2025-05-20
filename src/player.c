@@ -4,14 +4,14 @@
 #include <stdio.h>
 
 void IniciarJogador(Jogador *j) {
-    j->posicao = (Vector2){100, 568};
+    j->posicao = (Vector2){100, 520};  // Ajustado para 80x80
     j->velocidade = 0;
 
     // Carrega o sprite do personagem
-    j->sprite = LoadTexture("spritesBoneco/New Piskel.png");
+    j->sprite = LoadTexture("spritesBoneco/boneco.png");
 
-    // Define a caixa de colisão com o tamanho do frame
-    j->caixa = (Rectangle){j->posicao.x, j->posicao.y, 32, 32};
+    // Define a caixa de colisão com o tamanho do frame (80x80)
+    j->caixa = (Rectangle){j->posicao.x, j->posicao.y, 80, 80};
 
     // Inicializa a animação
     j->frameAtual = 0;
@@ -19,8 +19,8 @@ void IniciarJogador(Jogador *j) {
     j->frameVelocidade = 8; // FPS da animação
     j->totalFrames = 2;
 
-    // Frame inicial: 32x32, frames na vertical
-    j->frameRec = (Rectangle){0.0f, 0.0f, 32.0f, 32.0f};
+    // Frame inicial: 80x80, frames na vertical
+    j->frameRec = (Rectangle){0.0f, 0.0f, 80.0f, 80.0f};
 }
 
 void AtualizarJogador(Jogador *j) {
@@ -31,8 +31,8 @@ void AtualizarJogador(Jogador *j) {
     j->velocidade += 0.5f;
     j->posicao.y += j->velocidade;
 
-    if (j->posicao.y > 568) {
-        j->posicao.y = 568;
+    if (j->posicao.y > 520) {  // Ajustado para nova base
+        j->posicao.y = 520;
         j->velocidade = 0;
     }
 
@@ -48,7 +48,7 @@ void AtualizarJogador(Jogador *j) {
         if (j->frameAtual >= j->totalFrames)
             j->frameAtual = 0;
 
-        j->frameRec.y = j->frameAtual * 32.0f; // frames na vertical
+        j->frameRec.y = j->frameAtual * 80.0f; // frames na vertical
     }
 }
 
@@ -57,5 +57,5 @@ void DesenharJogador(Jogador j) {
     DrawTextureRec(j.sprite, j.frameRec, j.posicao, WHITE);
 
     // Borda de debug (opcional)
-    // DrawRectangleLines(j.posicao.x, j.posicao.y, 32, 32, GREEN);
+    // DrawRectangleLines(j.posicao.x, j.posicao.y, 80, 80, GREEN);
 }

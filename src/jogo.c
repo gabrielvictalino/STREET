@@ -19,7 +19,7 @@ typedef struct {
 } MenuFrame;
 
 int main() {
-    InitWindow(800, 600, "STREET - O jogo");
+    InitWindow(800, 800, "STREET - O jogo");
     SetTargetFPS(60);
     srand(time(NULL));
 
@@ -36,10 +36,10 @@ int main() {
 
     int pontos = 0;
 
-    int opcaoSelecionada = 0; // 0: Iniciar, 1: Pontuação, 2: Sair
+    int opcaoSelecionada = 0;
     const int totalOpcoes = 3;
 
-    // ---- MENU GRAFICO ----
+    // ---- MENU GRAFICO ----//
     Texture2D menuTexture = LoadTexture("spritesMenu/menu.png");
 
     MenuFrame menuFrames[3];
@@ -54,7 +54,7 @@ int main() {
         switch (estado) {
             case MENU_INICIAL: {
                 // Escalar imagem de 800x800 para 800x600
-                Rectangle dest = { 0, 0, 800, 600 };
+                Rectangle dest = { 0, 0, 800, 800 };
                 Rectangle src = menuFrames[opcaoSelecionada].frame;
                 Vector2 origin = { 0, 0 };
                 DrawTexturePro(menuTexture, src, dest, origin, 0, WHITE);
@@ -139,7 +139,7 @@ int main() {
         EndDrawing();
     }
 
-    // Liberação de recursos
+    
     LiberarObstaculos(obstaculos);
     UnloadTexture(jogador.sprite);
     LiberarMapa(&mapa);
