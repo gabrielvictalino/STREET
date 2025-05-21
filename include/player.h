@@ -15,6 +15,7 @@ typedef struct {
     int frameContador;
     int frameVelocidade;
     int totalFrames;
+    int pulos;
 } Jogador;
 
 void IniciarJogador(Jogador *j);

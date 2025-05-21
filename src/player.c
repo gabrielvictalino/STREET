@@ -6,6 +6,7 @@
 void IniciarJogador(Jogador *j) {
     j->posicao = (Vector2){100, 520};  // Ajustado para 80x80
     j->velocidade = 0;
+    j->pulos = 0;// inicia o contador de pulos
 
     // Carrega o sprite do personagem
     j->sprite = LoadTexture("spritesBoneco/boneco.png");
@@ -24,16 +25,20 @@ void IniciarJogador(Jogador *j) {
 }
 
 void AtualizarJogador(Jogador *j) {
-    // Física do pulo
-    if (IsKeyDown(KEY_SPACE) && j->posicao.y >= 300)
+    // Pulo com limite de 2
+    if (IsKeyPressed(KEY_SPACE) && j->pulos < 2) {
         j->velocidade = -12;
+        j->pulos++;
+    }
 
     j->velocidade += 0.5f;
     j->posicao.y += j->velocidade;
 
-    if (j->posicao.y > 520) {  // Ajustado para nova base
+    // Se o jogador tocar o chão
+    if (j->posicao.y > 520) {
         j->posicao.y = 520;
         j->velocidade = 0;
+        j->pulos = 0; // reseta o número de pulos
     }
 
     // Atualiza a caixa de colisão
@@ -51,6 +56,7 @@ void AtualizarJogador(Jogador *j) {
         j->frameRec.y = j->frameAtual * 80.0f; // frames na vertical
     }
 }
+
 
 void DesenharJogador(Jogador j) {
     // Desenha o frame atual
