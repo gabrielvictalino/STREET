@@ -26,11 +26,14 @@ void IniciarJogador(Jogador *j) {
 
 void AtualizarJogador(Jogador *j) {
     // Pulo com limite de 2
-    if (IsKeyPressed(KEY_SPACE) && j->pulos < 2) {
+    if (IsKeyPressed(KEY_SPACE) && j->pulos < 3) {
         j->velocidade = -12;
         j->pulos++;
     }
-
+    if (IsKeyPressed(KEY_UP) && j->pulos < 3) {
+        j->velocidade = -12;
+        j->pulos++;
+    }
     j->velocidade += 0.5f;
     j->posicao.y += j->velocidade;
 
