@@ -5,7 +5,7 @@
 
 void IniciarJogador(Jogador *j) {
     j->posicao = (Vector2){100, 520};  // Ajustado para 80x80
-    j->velocidade = 0;
+    j->velocidade = 0; 
     j->pulos = 0;// inicia o contador de pulos
 
     // Carrega o sprite do personagem

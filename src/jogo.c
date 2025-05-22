@@ -4,6 +4,7 @@
 #include "obstacle.h"
 #include "mapa.h"
 #include "enemy.h"
+#include "predio.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -39,13 +40,20 @@ int main() {
     int opcaoSelecionada = 0;
     const int totalOpcoes = 3;
 
-    // ---- MENU GRAFICO ----//
+    // MENU
     Texture2D menuTexture = LoadTexture("spritesMenu/menu.png");
 
     MenuFrame menuFrames[3];
-    menuFrames[0].frame = (Rectangle){ 0, 0, 800, 800 };         // START
-    menuFrames[1].frame = (Rectangle){ 800, 0, 800, 800 };       // RECORD
-    menuFrames[2].frame = (Rectangle){ 0, 800, 800, 800 };       // EXIT
+    menuFrames[0].frame = (Rectangle){ 0, 0, 800, 800 };
+    menuFrames[1].frame = (Rectangle){ 800, 0, 800, 800 };
+    menuFrames[2].frame = (Rectangle){ 0, 800, 800, 800 };
+
+    // PRÉDIOS
+    Texture2D texturaPredio = LoadTexture("spritesPredio/predio.png");
+    Predio predios[3];
+    for (int i = 0; i < 3; i++) {
+        predios[i].ativo = false; // inicia desativado
+    }
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -53,7 +61,6 @@ int main() {
 
         switch (estado) {
             case MENU_INICIAL: {
-                // Escalar imagem de 800x800 para 800x600
                 Rectangle dest = { 0, 0, 800, 800 };
                 Rectangle src = menuFrames[opcaoSelecionada].frame;
                 Vector2 origin = { 0, 0 };
@@ -72,11 +79,15 @@ int main() {
                         LiberarInimigos(inimigos);
                         inimigos = NULL;
                         pontos = 0;
+
+                        for (int i = 0; i < 3; i++) predios[i].ativo = false;
+
                         estado = JOGANDO;
                     } else if (opcaoSelecionada == 1) {
                         estado = PONTUACOES;
                     } else if (opcaoSelecionada == 2) {
                         UnloadTexture(menuTexture);
+                        UnloadTexture(texturaPredio);
                         CloseWindow();
                         return 0;
                     }
@@ -84,25 +95,58 @@ int main() {
                 break;
             }
 
-            case JOGANDO:
+            case JOGANDO: {
                 AtualizarMapa(&mapa);
                 AtualizarJogador(&jogador);
                 AtualizarObstaculos(obstaculos, pontos);
                 AtualizarInimigos(&inimigos);
-
+            
+                // Atualizar prédios
+                for (int i = 0; i < 3; i++) {
+                    if (!predios[i].ativo && GetRandomValue(0, 1000) < 5) {
+                        IniciarPredio(&predios[i], texturaPredio);
+                    }
+                    if (predios[i].ativo) {
+                        AtualizarPredio(&predios[i]);
+                    }
+                }
+            
+                // Colisão com topo dos prédios (plataforma/chão)
+                for (int i = 0; i < 3; i++) {
+                    if (predios[i].ativo && ColisaoComTopo(predios[i], jogador.caixa)) {
+                        if (jogador.velocidade > 0) {  // só se estiver caindo
+                            jogador.velocidade = 0;
+                            jogador.posicao.y = predios[i].hitboxTopo.y - jogador.caixa.height;
+                            jogador.caixa.y = jogador.posicao.y;
+                            jogador.pulos = 0; // reseta pulos, pois "pousou"
+                        }
+                    }
+                }
+            
                 if (VerificarColisao(&jogador, obstaculos) || VerificarColisaoComInimigos(inimigos, jogador.caixa)) {
                     SalvarPontuacao(pontos);
                     estado = GAME_OVER;
                 }
-
+            
                 pontos++;
-
+            
+                // Desenhar tudo
                 DesenharMapa(mapa);
+                
+                for (int i = 0; i < 3; i++) {
+                    if (predios[i].ativo) {
+                        DesenharPredio(predios[i]);
+                    }
+                }
+                
                 DesenharJogador(jogador);
                 DesenharObstaculos(obstaculos);
                 DesenharInimigos(inimigos);
+            
                 DrawText(TextFormat("Pontos: %d", pontos), 20, 20, 20, RAYWHITE);
                 break;
+            }
+            
 
             case GAME_OVER:
                 DrawText("GAME OVER", 270, 180, 40, RED);
@@ -113,14 +157,14 @@ int main() {
                     estado = MENU_INICIAL;
                 } else if (IsKeyPressed(KEY_ESCAPE)) {
                     UnloadTexture(menuTexture);
+                    UnloadTexture(texturaPredio);
                     CloseWindow();
                     return 0;
                 }
                 break;
 
-            case PONTUACOES:
+            case PONTUACOES: {
                 DrawText("RANKING DE PONTOS", 230, 120, 30, RAYWHITE);
-
                 char **pontuacoes = LerPontuacoes();
                 for (int i = 0; i < 5 && pontuacoes && pontuacoes[i]; i++) {
                     DrawText(pontuacoes[i], 280, 180 + i * 30, 20, LIGHTGRAY);
@@ -129,22 +173,22 @@ int main() {
                 free(pontuacoes);
 
                 DrawText("Pressione ESC para voltar ao menu", 180, 400, 20, GRAY);
-
                 if (IsKeyPressed(KEY_ESCAPE)) {
                     estado = MENU_INICIAL;
                 }
                 break;
+            }
         }
 
         EndDrawing();
     }
 
-    
     LiberarObstaculos(obstaculos);
     UnloadTexture(jogador.sprite);
     LiberarMapa(&mapa);
     LiberarInimigos(inimigos);
     UnloadTexture(menuTexture);
+    UnloadTexture(texturaPredio);
     CloseWindow();
 
     return 0;
