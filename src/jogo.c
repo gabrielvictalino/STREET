@@ -23,6 +23,14 @@ typedef struct {
 Texture2D spriteCarro;
 Texture2D spriteCaminhao;
 
+// Função para adicionar inimigo na lista encadeada
+void AdicionarInimigo(Inimigo **lista, Inimigo *novo) {
+    if (novo) {
+        novo->proximo = *lista;
+        *lista = novo;
+    }
+}
+
 int main() {
     InitWindow(800, 800, "STREET - O jogo");
     SetTargetFPS(60);
@@ -31,6 +39,7 @@ int main() {
     // Carregando sprites
     spriteCarro = LoadTexture("spritesCarro/carro.png");
     spriteCaminhao = LoadTexture("spritesCarro/caminhao.png");
+    CarregarTexturaInimigo("spritesCrocodilo/crocodilo.png"); // SPRITE INIMIGO
 
     EstadoJogo estado = MENU_INICIAL;
 
@@ -50,6 +59,10 @@ int main() {
 
     // Alternador para sprite do obstáculo (0 = carro, 1 = caminhão)
     int alternadorSprite = 0;
+
+    // Variável para controle de spawn de inimigos
+    int spawnTimer = 0;
+    const int spawnInterval = 120; // Spawn a cada 120 frames (2 segundos a 60 FPS)
 
     // MENU
     Texture2D menuTexture = LoadTexture("spritesMenu/menu.png");
@@ -89,6 +102,7 @@ int main() {
                         LiberarInimigos(inimigos);
                         inimigos = NULL;
                         pontos = 0;
+                        spawnTimer = 0;
                         for (int i = 0; i < 3; i++) predios[i].ativo = false;
                         estado = JOGANDO;
                     } else if (opcaoSelecionada == 1) {
@@ -98,6 +112,7 @@ int main() {
                         UnloadTexture(texturaPredio);
                         UnloadTexture(spriteCarro);
                         UnloadTexture(spriteCaminhao);
+                        DescarregarTexturaInimigo();
                         CloseWindow();
                         return 0;
                     }
@@ -109,17 +124,26 @@ int main() {
                 AtualizarMapa(&mapa);
                 AtualizarJogador(&jogador);
 
-                // Seleciona textura do obstáculo atual (carro ou caminhão)
+                // Atualiza obstáculos
                 Texture2D *spriteAtual = (alternadorSprite == 0) ? &spriteCarro : &spriteCaminhao;
                 AtualizarObstaculos(obstaculos, pontos, spriteAtual);
 
-                // Alterna sprite a cada 60 pontos (aprox. 1 segundo)
+                // Alterna sprite a cada 500 pontos
                 if (pontos % 500 == 0) {
                     alternadorSprite = 1 - alternadorSprite;
                 }
 
+                // Spawn de inimigos periodicamente
+                spawnTimer++;
+                if (spawnTimer >= spawnInterval) {
+                    spawnTimer = 0;
+                    Inimigo *novo = CriarInimigo();
+                    if (novo) AdicionarInimigo(&inimigos, novo);
+                }
+
                 AtualizarInimigos(&inimigos);
 
+                // Atualiza prédios
                 for (int i = 0; i < 3; i++) {
                     if (!predios[i].ativo && GetRandomValue(0, 1000) < 5) {
                         IniciarPredio(&predios[i], texturaPredio);
@@ -129,6 +153,7 @@ int main() {
                     }
                 }
 
+                // Colisão do jogador com topo do prédio
                 for (int i = 0; i < 3; i++) {
                     if (predios[i].ativo && ColisaoComTopo(predios[i], jogador.caixa)) {
                         if (jogador.velocidade > 0) {
@@ -140,6 +165,7 @@ int main() {
                     }
                 }
 
+                // Verifica colisões com obstáculos e inimigos
                 if (VerificarColisao(&jogador, obstaculos) || VerificarColisaoComInimigos(inimigos, jogador.caixa)) {
                     SalvarPontuacao(pontos);
                     estado = GAME_OVER;
@@ -147,6 +173,7 @@ int main() {
 
                 pontos++;
 
+                // Desenha o cenário
                 DesenharMapa(mapa);
 
                 for (int i = 0; i < 3; i++) {
@@ -173,6 +200,7 @@ int main() {
                     UnloadTexture(texturaPredio);
                     UnloadTexture(spriteCarro);
                     UnloadTexture(spriteCaminhao);
+                    DescarregarTexturaInimigo();
                     CloseWindow();
                     return 0;
                 }
@@ -198,10 +226,12 @@ int main() {
         EndDrawing();
     }
 
+    // Liberação final
     LiberarObstaculos(obstaculos);
     UnloadTexture(jogador.sprite);
     LiberarMapa(&mapa);
     LiberarInimigos(inimigos);
+    DescarregarTexturaInimigo();
     UnloadTexture(menuTexture);
     UnloadTexture(texturaPredio);
     UnloadTexture(spriteCarro);

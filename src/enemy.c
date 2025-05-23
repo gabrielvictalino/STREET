@@ -1,55 +1,87 @@
 #include "enemy.h"
 #include <stdlib.h>
 
+static Texture2D texturaInimigo = { 0 };  // Inicializa com zeros
+
 Inimigo *CriarInimigo() {
-    Inimigo *novo = malloc(sizeof(Inimigo));
-    novo->caixa = (Rectangle){800, 430, 40, 60};  // pode pular depois
-    novo->velocidade = 6.0f;
-    novo->proximo = NULL;
+    Inimigo *novo = (Inimigo *)malloc(sizeof(Inimigo));
+    if (novo) {
+        novo->caixa.x = GetScreenWidth();
+        novo->caixa.y = 380;  // Ajuste conforme necessário
+        novo->caixa.width = 80;
+        novo->caixa.height = 80;
+        novo->velocidade = 4.0f;
+        novo->proximo = NULL;
+    }
     return novo;
 }
 
 void AtualizarInimigos(Inimigo **lista) {
-    Inimigo *atual = *lista, *anterior = NULL;
+    Inimigo *atual = *lista;
+    Inimigo *anterior = NULL;
+
     while (atual) {
         atual->caixa.x -= atual->velocidade;
+
         if (atual->caixa.x + atual->caixa.width < 0) {
-            if (anterior) anterior->proximo = atual->proximo;
-            else *lista = atual->proximo;
-            free(atual);
-            atual = (anterior) ? anterior->proximo : *lista;
+            if (anterior) {
+                anterior->proximo = atual->proximo;
+            } else {
+                *lista = atual->proximo;
+            }
+            Inimigo *remover = atual;
+            atual = atual->proximo;
+            free(remover);
         } else {
             anterior = atual;
             atual = atual->proximo;
         }
     }
-
-    if (rand() % 120 == 0) {
-        Inimigo *novo = CriarInimigo();
-        novo->proximo = *lista;
-        *lista = novo;
-    }
 }
 
 void DesenharInimigos(Inimigo *lista) {
-    while (lista) {
-        DrawRectangleRec(lista->caixa, RED);
-        lista = lista->proximo;
+    Inimigo *atual = lista;
+    while (atual) {
+        DrawTextureRec(
+            texturaInimigo,
+            (Rectangle){ 0, 0, 80, 80 },
+            (Vector2){ atual->caixa.x, atual->caixa.y },
+            WHITE
+        );
+        atual = atual->proximo;
     }
-}
-
-bool VerificarColisaoComInimigos(Inimigo *lista, Rectangle jogador) {
-    while (lista) {
-        if (CheckCollisionRecs(lista->caixa, jogador)) return true;
-        lista = lista->proximo;
-    }
-    return false;
 }
 
 void LiberarInimigos(Inimigo *lista) {
     while (lista) {
-        Inimigo *tmp = lista;
+        Inimigo *temp = lista;
         lista = lista->proximo;
-        free(tmp);
+        free(temp);
+    }
+}
+
+bool VerificarColisaoComInimigos(Inimigo *lista, Rectangle jogador) {
+    Inimigo *atual = lista;
+    while (atual) {
+        if (CheckCollisionRecs(jogador, atual->caixa)) {
+            return true;
+        }
+        atual = atual->proximo;
+    }
+    return false;
+}
+
+void CarregarTexturaInimigo(const char *caminho) {
+    // Se textura já estiver carregada, descarrega para evitar vazamento
+    if (texturaInimigo.id != 0) {
+        UnloadTexture(texturaInimigo);
+    }
+    texturaInimigo = LoadTexture(caminho);
+}
+
+void DescarregarTexturaInimigo() {
+    if (texturaInimigo.id != 0) {
+        UnloadTexture(texturaInimigo);
+        texturaInimigo.id = 0;
     }
 }
