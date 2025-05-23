@@ -32,9 +32,10 @@ src/enemy.o: src/enemy.c include/enemy.h
 src/predio.o: src/predio.c include/predio.h
 	$(CC) $(CFLAGS) -c -o src/predio.o src/predio.c
 
-# Compilar e executar
+
 run: $(EXECUTAVEL)
-    ./$(EXECUTAVEL)
+	./$(EXECUTAVEL)
+
 
 
 # Limpar arquivos compilados

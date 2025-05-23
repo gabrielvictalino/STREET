@@ -23,6 +23,8 @@ typedef struct {
 Texture2D spriteCarro;
 Texture2D spriteCaminhao;
 
+
+
 // Função para adicionar inimigo na lista encadeada
 void AdicionarInimigo(Inimigo **lista, Inimigo *novo) {
     if (novo) {
@@ -189,10 +191,12 @@ int main() {
             }
 
             case GAME_OVER:
+                ClearBackground((Color){ 10, 10, 50, 255 });
+
                 DrawText("GAME OVER", 270, 180, 40, RED);
                 DrawText(TextFormat("Pontuação final: %d", pontos), 270, 240, 20, RAYWHITE);
                 DrawText("Pressione R para reiniciar ou ESC para sair", 180, 300, 20, GRAY);
-
+                
                 if (IsKeyPressed(KEY_R)) {
                     estado = MENU_INICIAL;
                 } else if (IsKeyPressed(KEY_ESCAPE)) {
@@ -206,21 +210,29 @@ int main() {
                 }
                 break;
 
-            case PONTUACOES: {
-                DrawText("RANKING DE PONTOS", 230, 120, 30, RAYWHITE);
-                char **pontuacoes = LerPontuacoes();
-                for (int i = 0; i < 5 && pontuacoes && pontuacoes[i]; i++) {
-                    DrawText(pontuacoes[i], 280, 180 + i * 30, 20, LIGHTGRAY);
-                    free(pontuacoes[i]);
-                }
-                free(pontuacoes);
+                case PONTUACOES: {
+                    ClearBackground((Color){ 10, 10, 50, 255 });
 
-                DrawText("Pressione ESC para voltar ao menu", 180, 400, 20, GRAY);
-                if (IsKeyPressed(KEY_ESCAPE)) {
-                    estado = MENU_INICIAL;
+                    // Título
+                    DrawText("TOP 5 RECORDES", 230, 120, 30, GOLD);
+                
+                    // Lê e exibe as pontuações
+                    char **pontuacoes = LerPontuacoes();
+                    for (int i = 0; i < 5 && pontuacoes && pontuacoes[i]; i++) {
+                        DrawText(TextFormat("#%d - %s", i + 1, pontuacoes[i]), 250, 180 + i * 30, 20, YELLOW);
+                        free(pontuacoes[i]);
+                    }
+                    free(pontuacoes);
+                
+                    // Instrução para voltar
+                    DrawText("Pressione O para voltar ao menu", 180, 400, 20, GOLD);
+                
+                    // Voltar ao menu
+                    if (IsKeyPressed(KEY_O)) {
+                        estado = MENU_INICIAL;
+                    }
+                    break;
                 }
-                break;
-            }
         }
 
         EndDrawing();
