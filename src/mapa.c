@@ -22,7 +22,7 @@ void AtualizarMapa(Mapa *m) {
     static int contador = 0;
     contador++;
 
-    if (contador >= 30) {  // troca de quadro a cada 0.5 segundos em 60 FPS
+    if (contador >= 28) {  // troca de quadro a cada 0.5 segundos em 60 FPS
         contador = 0;
         m->frameAtual = (m->frameAtual + 1) % m->totalFrames;
 

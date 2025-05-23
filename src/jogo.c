@@ -195,9 +195,9 @@ int main() {
 
                 DrawText("GAME OVER", 270, 180, 40, RED);
                 DrawText(TextFormat("Pontuação final: %d", pontos), 270, 240, 20, RAYWHITE);
-                DrawText("Pressione R para reiniciar ou ESC para sair", 180, 300, 20, GRAY);
+                DrawText("Pressione V para voltar ao menu ou ESC para sair", 180, 300, 20, YELLOW);
                 
-                if (IsKeyPressed(KEY_R)) {
+                if (IsKeyPressed(KEY_V)) {
                     estado = MENU_INICIAL;
                 } else if (IsKeyPressed(KEY_ESCAPE)) {
                     UnloadTexture(menuTexture);

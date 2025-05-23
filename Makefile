@@ -19,11 +19,9 @@ OBJ = $(SRC:.c=.o)
 
 # Detecta o sistema operacional e ajusta as bibliotecas
 ifeq ($(OS),Windows_NT)
-    # Para Windows
     LDFLAGS = -lraylib -lwinmm -lgdi32
     EXECUTAVEL := $(EXECUTAVEL).exe
 else
-    # Para Linux
     LDFLAGS = -lraylib -lm -ldl -lpthread -lGL -lX11
 endif
 
@@ -31,16 +29,16 @@ endif
 all: $(EXECUTAVEL)
 
 $(EXECUTAVEL): $(OBJ)
-    $(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 # Compilação dos .c para .o
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
-    $(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Executar o jogo
 run: $(EXECUTAVEL)
-    ./$(EXECUTAVEL)
+	./$(EXECUTAVEL)
 
 # Limpar arquivos compilados
 clean:
-    rm -f $(SRC_DIR)/*.o $(EXECUTAVEL)
+	rm -f $(SRC_DIR)/*.o $(EXECUTAVEL)
