@@ -19,10 +19,18 @@ typedef struct {
     Rectangle frame;
 } MenuFrame;
 
+// Duas texturas para obstáculos
+Texture2D spriteCarro;
+Texture2D spriteCaminhao;
+
 int main() {
     InitWindow(800, 800, "STREET - O jogo");
     SetTargetFPS(60);
     srand(time(NULL));
+
+    // Carregando sprites
+    spriteCarro = LoadTexture("spritesCarro/carro.png");
+    spriteCaminhao = LoadTexture("spritesCarro/caminhao.png");
 
     EstadoJogo estado = MENU_INICIAL;
 
@@ -40,20 +48,22 @@ int main() {
     int opcaoSelecionada = 0;
     const int totalOpcoes = 3;
 
+    // Alternador para sprite do obstáculo (0 = carro, 1 = caminhão)
+    int alternadorSprite = 0;
+
     // MENU
     Texture2D menuTexture = LoadTexture("spritesMenu/menu.png");
 
-    MenuFrame menuFrames[3];
-    menuFrames[0].frame = (Rectangle){ 0, 0, 800, 800 };
-    menuFrames[1].frame = (Rectangle){ 800, 0, 800, 800 };
-    menuFrames[2].frame = (Rectangle){ 0, 800, 800, 800 };
+    MenuFrame menuFrames[3] = {
+        { .frame = (Rectangle){ 0, 0, 800, 800 } },
+        { .frame = (Rectangle){ 800, 0, 800, 800 } },
+        { .frame = (Rectangle){ 0, 800, 800, 800 } }
+    };
 
     // PRÉDIOS
     Texture2D texturaPredio = LoadTexture("spritesPredio/predio.png");
     Predio predios[3];
-    for (int i = 0; i < 3; i++) {
-        predios[i].ativo = false; // inicia desativado
-    }
+    for (int i = 0; i < 3; i++) predios[i].ativo = false;
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -79,15 +89,15 @@ int main() {
                         LiberarInimigos(inimigos);
                         inimigos = NULL;
                         pontos = 0;
-
                         for (int i = 0; i < 3; i++) predios[i].ativo = false;
-
                         estado = JOGANDO;
                     } else if (opcaoSelecionada == 1) {
                         estado = PONTUACOES;
                     } else if (opcaoSelecionada == 2) {
                         UnloadTexture(menuTexture);
                         UnloadTexture(texturaPredio);
+                        UnloadTexture(spriteCarro);
+                        UnloadTexture(spriteCaminhao);
                         CloseWindow();
                         return 0;
                     }
@@ -98,10 +108,18 @@ int main() {
             case JOGANDO: {
                 AtualizarMapa(&mapa);
                 AtualizarJogador(&jogador);
-                AtualizarObstaculos(obstaculos, pontos);
+
+                // Seleciona textura do obstáculo atual (carro ou caminhão)
+                Texture2D *spriteAtual = (alternadorSprite == 0) ? &spriteCarro : &spriteCaminhao;
+                AtualizarObstaculos(obstaculos, pontos, spriteAtual);
+
+                // Alterna sprite a cada 60 pontos (aprox. 1 segundo)
+                if (pontos % 500 == 0) {
+                    alternadorSprite = 1 - alternadorSprite;
+                }
+
                 AtualizarInimigos(&inimigos);
-            
-                // Atualizar prédios
+
                 for (int i = 0; i < 3; i++) {
                     if (!predios[i].ativo && GetRandomValue(0, 1000) < 5) {
                         IniciarPredio(&predios[i], texturaPredio);
@@ -110,43 +128,38 @@ int main() {
                         AtualizarPredio(&predios[i]);
                     }
                 }
-            
-                // Colisão com topo dos prédios (plataforma/chão)
+
                 for (int i = 0; i < 3; i++) {
                     if (predios[i].ativo && ColisaoComTopo(predios[i], jogador.caixa)) {
-                        if (jogador.velocidade > 0) {  // só se estiver caindo
+                        if (jogador.velocidade > 0) {
                             jogador.velocidade = 0;
                             jogador.posicao.y = predios[i].hitboxTopo.y - jogador.caixa.height;
                             jogador.caixa.y = jogador.posicao.y;
-                            jogador.pulos = 0; // reseta pulos, pois "pousou"
+                            jogador.pulos = 0;
                         }
                     }
                 }
-            
+
                 if (VerificarColisao(&jogador, obstaculos) || VerificarColisaoComInimigos(inimigos, jogador.caixa)) {
                     SalvarPontuacao(pontos);
                     estado = GAME_OVER;
                 }
-            
+
                 pontos++;
-            
-                // Desenhar tudo
+
                 DesenharMapa(mapa);
-                
+
                 for (int i = 0; i < 3; i++) {
-                    if (predios[i].ativo) {
-                        DesenharPredio(predios[i]);
-                    }
+                    if (predios[i].ativo) DesenharPredio(predios[i]);
                 }
-                
+
                 DesenharJogador(jogador);
                 DesenharObstaculos(obstaculos);
                 DesenharInimigos(inimigos);
-            
+
                 DrawText(TextFormat("Pontos: %d", pontos), 20, 20, 20, RAYWHITE);
                 break;
             }
-            
 
             case GAME_OVER:
                 DrawText("GAME OVER", 270, 180, 40, RED);
@@ -158,6 +171,8 @@ int main() {
                 } else if (IsKeyPressed(KEY_ESCAPE)) {
                     UnloadTexture(menuTexture);
                     UnloadTexture(texturaPredio);
+                    UnloadTexture(spriteCarro);
+                    UnloadTexture(spriteCaminhao);
                     CloseWindow();
                     return 0;
                 }
@@ -189,6 +204,8 @@ int main() {
     LiberarInimigos(inimigos);
     UnloadTexture(menuTexture);
     UnloadTexture(texturaPredio);
+    UnloadTexture(spriteCarro);
+    UnloadTexture(spriteCaminhao);
     CloseWindow();
 
     return 0;

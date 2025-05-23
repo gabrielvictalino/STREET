@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "raylib.h"
+
+// Retirado o extern Texture2D spriteObstaculo
+
 int AleatorioEntre(int min, int max) {
     return min + rand() % (max - min + 1);
 }
@@ -15,32 +19,33 @@ ListaObstaculos* CriarObstaculos() {
     return lista;
 }
 
-void AdicionarObstaculo(ListaObstaculos *lista, int pontos) {
+// Agora recebe Texture2D* para atribuir ao obstáculo
+void AdicionarObstaculo(ListaObstaculos *lista, int pontos, Texture2D *sprite) {
     Obstaculo *novo = malloc(sizeof(Obstaculo));
 
-    // Aumenta a altura máxima com o tempo
-    int alturaMax = 80 + pontos / 100;  // cresce a cada 100 pontos
+    int alturaMax = 80 + pontos / 100;
     if (alturaMax > 180) alturaMax = 180;
 
     int altura = AleatorioEntre(40, alturaMax);
     int y = 600 - altura;
 
     novo->caixa = (Rectangle){800, y, 40, altura};
-
-    // Aumenta a velocidade com o tempo
-    novo->velocidade = 4 + pontos / 150.0f;  // mais rápido conforme pontua
+    novo->velocidade = 4 + pontos / 150.0f;
     if (novo->velocidade > 10.0f) novo->velocidade = 10.0f;
+
+    novo->frameAtual = AleatorioEntre(0, 1);  // frame 0 ou 1
+    
+    novo->sprite = sprite;  // Atribui a textura
 
     novo->proximo = lista->inicio;
     lista->inicio = novo;
 }
 
-
-
-void AtualizarObstaculos(ListaObstaculos *lista, int pontos) {
+// Agora recebe Texture2D* para passar ao criar obstáculo
+void AtualizarObstaculos(ListaObstaculos *lista, int pontos, Texture2D *sprite) {
     lista->contadorFrames++;
     if (lista->contadorFrames >= 120) {
-        AdicionarObstaculo(lista, pontos);
+        AdicionarObstaculo(lista, pontos, sprite);
         lista->contadorFrames = 0;
     }
 
@@ -67,10 +72,15 @@ void AtualizarObstaculos(ListaObstaculos *lista, int pontos) {
     }
 }
 
-
 void DesenharObstaculos(ListaObstaculos *lista) {
-    for (Obstaculo *o = lista->inicio; o != NULL; o = o->proximo)
-        DrawRectangleRec(o->caixa, ORANGE);
+    for (Obstaculo *o = lista->inicio; o != NULL; o = o->proximo) {
+        Rectangle frame = { 0, 0, 80, 32 };
+        if (o->frameAtual == 1) frame.y = 32;
+
+        Vector2 posicao = { o->caixa.x, o->caixa.y + o->caixa.height - 32 };
+        // Usa o sprite individual do obstáculo
+        DrawTextureRec(*o->sprite, frame, posicao, WHITE);
+    }
 }
 
 bool VerificarColisao(Jogador *j, ListaObstaculos *lista) {
