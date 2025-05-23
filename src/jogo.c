@@ -219,16 +219,16 @@ int main() {
                     // Lê e exibe as pontuações
                     char **pontuacoes = LerPontuacoes();
                     for (int i = 0; i < 5 && pontuacoes && pontuacoes[i]; i++) {
-                        DrawText(TextFormat("#%d - %s", i + 1, pontuacoes[i]), 250, 180 + i * 30, 20, YELLOW);
+                        DrawText(TextFormat("%s", pontuacoes[i]), 250, 180 + i * 30, 20, YELLOW);
                         free(pontuacoes[i]);
                     }
                     free(pontuacoes);
                 
                     // Instrução para voltar
-                    DrawText("Pressione O para voltar ao menu", 180, 400, 20, GOLD);
+                    DrawText("Pressione V para voltar ao menu", 180, 400, 20, GOLD);
                 
                     // Voltar ao menu
-                    if (IsKeyPressed(KEY_O)) {
+                    if (IsKeyPressed(KEY_V)) {
                         estado = MENU_INICIAL;
                     }
                     break;

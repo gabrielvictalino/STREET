@@ -11,8 +11,8 @@ void IniciarJogador(Jogador *j) {
     // Carrega o sprite do personagem
     j->sprite = LoadTexture("spritesBoneco/boneco.png");
 
-    // Define a caixa de colisão com o tamanho do frame (80x80)
-    j->caixa = (Rectangle){j->posicao.x, j->posicao.y, 80, 80};
+    // Define a caixa de colisão com o tamanho do frame (65x65)
+    j->caixa = (Rectangle){j->posicao.x, j->posicao.y, 65, 65};
 
     // Inicializa a animação
     j->frameAtual = 0;

@@ -2,42 +2,45 @@
 CC = gcc
 CFLAGS = -Wall -std=c99 -O2 -Iinclude
 
-# Arquivos objeto (somente .o)
-OBJETOS = src/jogo.o src/player.o src/obstacle.o src/score.o src/mapa.o src/enemy.o src/predio.o
+# Nome do executável
 EXECUTAVEL = street
 
+# Arquivos fonte e objeto
+SRC_DIR = src
+SRC = $(SRC_DIR)/jogo.c \
+      $(SRC_DIR)/player.c \
+      $(SRC_DIR)/obstacle.c \
+      $(SRC_DIR)/score.c \
+      $(SRC_DIR)/mapa.c \
+      $(SRC_DIR)/enemy.c \
+      $(SRC_DIR)/predio.c
+
+OBJ = $(SRC:.c=.o)
+
+# Detecta o sistema operacional e ajusta as bibliotecas
+ifeq ($(OS),Windows_NT)
+    # Para Windows
+    LDFLAGS = -lraylib -lwinmm -lgdi32
+    EXECUTAVEL := $(EXECUTAVEL).exe
+else
+    # Para Linux
+    LDFLAGS = -lraylib -lm -ldl -lpthread -lGL -lX11
+endif
+
 # Regra principal
-$(EXECUTAVEL): $(OBJETOS)
-	$(CC) -o $(EXECUTAVEL) $(OBJETOS) -lraylib -lm -ldl -lpthread -lGL -lX11
+all: $(EXECUTAVEL)
 
-# Regras para cada .o
-src/jogo.o: src/jogo.c include/player.h include/obstacle.h include/score.h include/mapa.h include/enemy.h include/predio.h
-	$(CC) $(CFLAGS) -c -o src/jogo.o src/jogo.c
+$(EXECUTAVEL): $(OBJ)
+    $(CC) -o $@ $^ $(LDFLAGS)
 
-src/player.o: src/player.c include/player.h
-	$(CC) $(CFLAGS) -c -o src/player.o src/player.c
+# Compilação dos .c para .o
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
+    $(CC) $(CFLAGS) -c -o $@ $<
 
-src/obstacle.o: src/obstacle.c include/obstacle.h
-	$(CC) $(CFLAGS) -c -o src/obstacle.o src/obstacle.c
-
-src/score.o: src/score.c include/score.h
-	$(CC) $(CFLAGS) -c -o src/score.o src/score.c
-
-src/mapa.o: src/mapa.c include/mapa.h
-	$(CC) $(CFLAGS) -c -o src/mapa.o src/mapa.c
-
-src/enemy.o: src/enemy.c include/enemy.h
-	$(CC) $(CFLAGS) -c -o src/enemy.o src/enemy.c
-
-src/predio.o: src/predio.c include/predio.h
-	$(CC) $(CFLAGS) -c -o src/predio.o src/predio.c
-
-
+# Executar o jogo
 run: $(EXECUTAVEL)
-	./$(EXECUTAVEL)
-
-
+    ./$(EXECUTAVEL)
 
 # Limpar arquivos compilados
 clean:
-	rm -f src/*.o $(EXECUTAVEL)
+    rm -f $(SRC_DIR)/*.o $(EXECUTAVEL)
