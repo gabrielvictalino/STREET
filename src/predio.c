@@ -10,9 +10,9 @@ void IniciarPredio(Predio *predio, Texture2D sprite) {
     predio->hitboxTopo = (Rectangle){
         predio->posicao.x,
         predio->posicao.y,
-        200, 10  // largura do prédio, altura da área "pisável"
+        110, 30  //largura do prédio, altura da área "pisável"
     };
-    predio->ativo = true;
+    predio->ativo = true;// deixa ele pisável
 }
 
 void AtualizarPredio(Predio *predio) {
@@ -21,19 +21,18 @@ void AtualizarPredio(Predio *predio) {
     predio->hitboxTopo.x = predio->posicao.x;
     predio->hitboxTopo.y = predio->posicao.y;
 
-    if (predio->posicao.x + 200 < 0) {
+    if (predio->posicao.x + 140 < 0) {
         predio->ativo = false;
     }
 }
 
 void DesenharPredio(Predio predio) {
     if (predio.ativo) {
-        DrawTexture(predio.sprite, predio.posicao.x, predio.posicao.y, WHITE);
+        DrawTexture(predio.sprite, predio.posicao.x, predio.posicao.y, WHITE);// texturiza
 
-        // DrawRectangleLinesEx(predio.hitboxTopo, 1, RED); // debug hitbox
     }
 }
 
 bool ColisaoComTopo(Predio predio, Rectangle jogador) {
-    return predio.ativo && CheckCollisionRecs(predio.hitboxTopo, jogador);
+    return predio.ativo && CheckCollisionRecs(predio.hitboxTopo, jogador);//calcula a colisão
 }

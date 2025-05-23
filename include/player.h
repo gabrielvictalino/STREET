@@ -8,7 +8,7 @@ typedef struct {
     float velocidade;
     Rectangle caixa;
 
-    // Animação
+    
     Texture2D sprite;
     Rectangle frameRec;
     int frameAtual;

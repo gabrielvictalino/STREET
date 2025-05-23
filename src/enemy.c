@@ -7,10 +7,12 @@ Inimigo *CriarInimigo() {
     Inimigo *novo = (Inimigo *)malloc(sizeof(Inimigo));
     if (novo) {
         novo->caixa.x = GetScreenWidth();
-        novo->caixa.y = 380;  // Ajuste conforme necessário
+        novo->caixa.y = 380;
         novo->caixa.width = 80;
         novo->caixa.height = 80;
         novo->velocidade = 4.0f;
+        novo->frameAtual = 0;
+        novo->contadorFrames = 0;
         novo->proximo = NULL;
     }
     return novo;
@@ -22,6 +24,13 @@ void AtualizarInimigos(Inimigo **lista) {
 
     while (atual) {
         atual->caixa.x -= atual->velocidade;
+
+        // Animação simples: alterna a cada 15 frames
+        atual->contadorFrames++;
+        if (atual->contadorFrames >= 15) {
+            atual->frameAtual = 1 - atual->frameAtual;  // Alterna entre 0 e 1
+            atual->contadorFrames = 0;
+        }
 
         if (atual->caixa.x + atual->caixa.width < 0) {
             if (anterior) {
@@ -42,9 +51,15 @@ void AtualizarInimigos(Inimigo **lista) {
 void DesenharInimigos(Inimigo *lista) {
     Inimigo *atual = lista;
     while (atual) {
+        Rectangle frame = {
+            0,
+            atual->frameAtual * 80,  // y = 0 ou y = 80
+            80,
+            80
+        };
         DrawTextureRec(
             texturaInimigo,
-            (Rectangle){ 0, 0, 80, 80 },
+            frame,
             (Vector2){ atual->caixa.x, atual->caixa.y },
             WHITE
         );
@@ -72,7 +87,6 @@ bool VerificarColisaoComInimigos(Inimigo *lista, Rectangle jogador) {
 }
 
 void CarregarTexturaInimigo(const char *caminho) {
-    // Se textura já estiver carregada, descarrega para evitar vazamento
     if (texturaInimigo.id != 0) {
         UnloadTexture(texturaInimigo);
     }

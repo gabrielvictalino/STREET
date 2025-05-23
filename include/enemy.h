@@ -7,6 +7,8 @@
 typedef struct Inimigo {
     Rectangle caixa;
     float velocidade;
+    int frameAtual;
+    int contadorFrames;
     struct Inimigo *proximo;
 } Inimigo;
 

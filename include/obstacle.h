@@ -9,7 +9,7 @@ typedef struct Obstaculo {
     Rectangle caixa;
     float velocidade;
     int frameAtual;
-    Texture2D *sprite;      // Ponteiro para textura usada no obstáculo
+    Texture2D *sprite;      
     struct Obstaculo *proximo;
 } Obstaculo;
 
