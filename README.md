@@ -101,4 +101,7 @@ brew install raylib
 ```
 
 # 📽️ Link do ScreenCast da Gameplay:
+```
+https://www.youtube.com/shorts/_D7-Pel735U
+```
 
