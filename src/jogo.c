@@ -34,7 +34,7 @@ void AdicionarInimigo(Inimigo **lista, Inimigo *novo) {
 }
 
 int main() {
-    InitWindow(800, 800, "STREET - O jogo");
+    InitWindow(1900, 1080, "STREET - O jogo");
     SetTargetFPS(60);
     srand(time(NULL));
 
@@ -86,7 +86,7 @@ int main() {
 
         switch (estado) {
             case MENU_INICIAL: {
-                Rectangle dest = { 0, 0, 800, 800 };
+                Rectangle dest = { 0, 0, 1920, 1000 };
                 Rectangle src = menuFrames[opcaoSelecionada].frame;
                 Vector2 origin = { 0, 0 };
                 DrawTexturePro(menuTexture, src, dest, origin, 0, WHITE);
@@ -110,6 +110,7 @@ int main() {
                     } else if (opcaoSelecionada == 1) {
                         estado = PONTUACOES;
                     } else if (opcaoSelecionada == 2) {
+                        
                         UnloadTexture(menuTexture);
                         UnloadTexture(texturaPredio);
                         UnloadTexture(spriteCarro);
@@ -200,6 +201,7 @@ int main() {
                 if (IsKeyPressed(KEY_V)) {
                     estado = MENU_INICIAL;
                 } else if (IsKeyPressed(KEY_ESCAPE)) {
+
                     UnloadTexture(menuTexture);
                     UnloadTexture(texturaPredio);
                     UnloadTexture(spriteCarro);

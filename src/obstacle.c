@@ -27,9 +27,9 @@ void AdicionarObstaculo(ListaObstaculos *lista, int pontos, Texture2D *sprite) {
     if (alturaMax > 180) alturaMax = 180;
 
     int altura = AleatorioEntre(40, alturaMax);
-    int y = 600 - altura;
+    int y = 730 - altura;
 
-    novo->caixa = (Rectangle){800, y, 40, altura};
+    novo->caixa = (Rectangle){1900, y, 40, altura};
     novo->velocidade = 4 + pontos / 150.0f;
     if (novo->velocidade > 10.0f) novo->velocidade = 10.0f;
 

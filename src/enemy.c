@@ -7,10 +7,10 @@ Inimigo *CriarInimigo() {
     Inimigo *novo = (Inimigo *)malloc(sizeof(Inimigo));
     if (novo) {
         novo->caixa.x = GetScreenWidth();
-        novo->caixa.y = 380;
-        novo->caixa.width = 80;
-        novo->caixa.height = 80;
-        novo->velocidade = 4.0f;
+        novo->caixa.y = 510;
+        novo->caixa.width = 60;
+        novo->caixa.height = 60;
+        novo->velocidade = 6.0f;
         novo->frameAtual = 0;
         novo->contadorFrames = 0;
         novo->proximo = NULL;

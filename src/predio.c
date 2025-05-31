@@ -4,8 +4,8 @@
 void IniciarPredio(Predio *predio, Texture2D sprite) {
     predio->sprite = sprite;
     predio->posicao = (Vector2){
-        800,        // começa fora da tela, à direita
-        320        // altura fixa (pode ajustar aqui o valor desejado)
+        1900,        // começa fora da tela, à direita
+        460        // altura fixa (pode ajustar aqui o valor desejado)
     };
     predio->hitboxTopo = (Rectangle){
         predio->posicao.x,
@@ -16,7 +16,7 @@ void IniciarPredio(Predio *predio, Texture2D sprite) {
 }
 
 void AtualizarPredio(Predio *predio) {
-    predio->posicao.x -= 2;
+    predio->posicao.x -= 4;
 
     predio->hitboxTopo.x = predio->posicao.x;
     predio->hitboxTopo.y = predio->posicao.y;

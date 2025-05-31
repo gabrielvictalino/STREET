@@ -13,6 +13,7 @@ void IniciarMapa(Mapa *m) {
     m->frameAltura = 800;
     m->totalFrames = 5;
     m->frameAtual = 0;
+    Rectangle dest = { 0, 0, 1920, 1000 };
 
     m->frameRec = (Rectangle){ 0, 0, (float)m->frameLargura, (float)m->frameAltura };
     m->posicao = (Vector2){ 0, 0 };
@@ -39,7 +40,7 @@ void DesenharMapa(Mapa m) {
     Rectangle frameVisivel = m.frameRec;
     frameVisivel.height = 800;
 
-    Rectangle destino = { m.posicao.x, m.posicao.y, 800, 800 };
+    Rectangle destino = { m.posicao.x, m.posicao.y, 1920, 1000 };
 
     DrawTexturePro(m.textura, frameVisivel, destino, (Vector2){0, 0}, 0.0f, WHITE);
 }

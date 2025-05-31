@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 void IniciarJogador(Jogador *j) {
-    j->posicao = (Vector2){100, 520};  // Ajustado para 80x80
+    j->posicao = (Vector2){100, 680};  // Ajustado para 80x80
     j->velocidade = 0; 
     j->pulos = 0;// inicia o contador de pulos
 
@@ -38,8 +38,8 @@ void AtualizarJogador(Jogador *j) {
     j->posicao.y += j->velocidade;
 
     // Se o jogador tocar o chão
-    if (j->posicao.y > 520) {
-        j->posicao.y = 520;
+    if (j->posicao.y > 680) {
+        j->posicao.y = 680;
         j->velocidade = 0;
         j->pulos = 0; // reseta o número de pulos
     }
